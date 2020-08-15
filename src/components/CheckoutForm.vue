@@ -28,7 +28,9 @@
             <template v-for="c in cards">
               <v-list-item :key="c.id">
                 <template v-slot:default="{ active }">
-                  <v-btn icon @click.stop="editCard(c)"><v-icon>mdi-pencil</v-icon></v-btn>
+                  <v-btn icon @click.stop="editCard(c)">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
                   <v-list-item-content>
                     <v-list-item-title v-text="c.id"></v-list-item-title>
                     <v-list-item-subtitle class="text--primary" v-text="c.holder"></v-list-item-subtitle>
@@ -44,10 +46,10 @@
           </v-list-item-group>
         </v-list>
         <v-row justify="end">
-            <v-btn @click.stop="editCard(null)" text>
-              <v-icon>mdi-plus-circle-outline</v-icon>Add new card
-            </v-btn>
-          </v-row>
+          <v-btn @click.stop="editCard(null)" text>
+            <v-icon>mdi-plus-circle-outline</v-icon>Add new card
+          </v-btn>
+        </v-row>
 
         <v-row>
           <v-col class="text-left">
@@ -59,20 +61,46 @@
         </v-row>
 
         <v-bottom-sheet v-model="dialog">
-          <CreditCardForm :key="formKey" @close="dialog=false" @createdCard="addCard" @editedCard="saveCard" v-bind:cardToEdit="cardToEdit"/>
+          <CreditCardForm
+            :key="formKey"
+            @close="dialog=false"
+            @createdCard="addCard"
+            @editedCard="saveCard"
+            v-bind:cardToEdit="cardToEdit"
+          />
         </v-bottom-sheet>
       </v-stepper-content>
 
       <v-stepper-content step="3">
-        {{this.cards[this.selected]}}
-        <v-row>
-          <v-col class="text-left">
-            <v-btn @click="currentStep -= 1">Back</v-btn>
-          </v-col>
-          <v-col class="text-right">
-            <v-btn color="success">Order</v-btn>
-          </v-col>
-        </v-row>
+        <v-container>
+          <v-card color="#000080" dark max-width="400" class="mx-auto">
+            <v-card-title>
+              <v-icon large left>mdi-credit-card</v-icon>
+              <span class="title">{{this.cards[this.selected].id}}</span>
+            </v-card-title>
+            <v-card-text class="headline font-weight-bold">{{this.cards[this.selected].number}}</v-card-text>
+            <v-card-actions>
+              <v-list-item class="grow">
+                <v-list-item-content>
+                  <v-list-item-title>{{this.cards[this.selected].holder}}</v-list-item-title>
+                </v-list-item-content>
+
+                <v-row align="center" justify="end">
+                  <span class="subheading mr-2">{{this.cards[this.selected].expiry}}</span>
+                </v-row>
+              </v-list-item>
+            </v-card-actions>
+          </v-card>
+
+          <v-row>
+            <v-col class="text-left">
+              <v-btn @click="currentStep -= 1">Back</v-btn>
+            </v-col>
+            <v-col class="text-right">
+              <v-btn color="success">Order</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -83,12 +111,12 @@ import CreditCardForm from "@/components/CreditCardForm.vue";
 
 export default {
   name: "CheckoutForm",
-components: {
+  components: {
     CreditCardForm,
   },
   data: () => ({
     dialog: false,
-    formKey:0,
+    formKey: 0,
     currentStep: 2,
     selected: 0,
     cardToEdit: null,
@@ -111,23 +139,23 @@ components: {
     steps: ["Shipping", "Payment", "Review"],
   }),
   methods: {
-    editCard(card){
-      this.cardToEdit=card
-      this.dialog=true
+    editCard(card) {
+      this.cardToEdit = card;
+      this.dialog = true;
     },
-    addCard(card){
-      this.cards.push(card)
-      this.dialog=false
+    addCard(card) {
+      this.cards.push(card);
+      this.dialog = false;
     },
-    saveCard(card){
-      this.cardToEdit=card
-      this.dialog=false
+    saveCard(card) {
+      this.cardToEdit = card;
+      this.dialog = false;
     },
   },
   watch: {
-    dialog(){
-      this.formKey+=1
-    }
-  }
+    dialog() {
+      this.formKey += 1;
+    },
+  },
 };
 </script>
