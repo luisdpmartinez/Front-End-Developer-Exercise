@@ -59,9 +59,9 @@
           </v-col>
         </v-row>
 
-        <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-bottom-sheet v-model="dialog">
           <CreditCardForm :key="formKey" @close="dialog=false" @createdCard="addCard" @editedCard="saveCard" v-bind:cardToEdit="cardToEdit"/>
-        </v-dialog>
+        </v-bottom-sheet>
       </v-stepper-content>
 
       <v-stepper-content step="3">
