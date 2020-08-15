@@ -23,7 +23,7 @@
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-list two-line>
+        <v-list two-line height="300px" style="overflow-y:scroll;">
           <v-list-item-group v-model="selected" mandatory active-class="blue--text">
             <template v-for="c in cards">
               <v-list-item :key="c.id">
@@ -41,14 +41,13 @@
                 </template>
               </v-list-item>
             </template>
-            <v-divider />
           </v-list-item-group>
-          <v-row justify="end">
+        </v-list>
+        <v-row justify="end">
             <v-btn @click.stop="editCard(null)" text>
               <v-icon>mdi-plus-circle-outline</v-icon>Add new card
             </v-btn>
           </v-row>
-        </v-list>
 
         <v-row>
           <v-col class="text-left">
