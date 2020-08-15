@@ -73,7 +73,7 @@
 
       <v-stepper-content step="3">
         <v-container>
-          <v-card color="#000080" dark max-width="400" class="mx-auto">
+          <v-card color="#000080" dark max-width="300" class="mx-auto">
             <v-card-title>
               <v-icon large left>mdi-credit-card</v-icon>
               <span class="title">{{this.cards[this.selected].id}}</span>
