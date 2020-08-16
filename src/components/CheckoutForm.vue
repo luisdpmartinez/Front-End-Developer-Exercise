@@ -60,7 +60,7 @@
           </v-col>
         </v-row>
 
-        <v-bottom-sheet v-model="dialog">
+        <v-bottom-sheet v-model="dialog" persistent>
           <CreditCardForm
             :key="formKey"
             @close="dialog=false"
@@ -124,15 +124,15 @@ export default {
       {
         id: "Visa1",
         holder: "Luis Martinez",
-        number: "555555555555",
-        expiry: "01/01",
+        number: "4591849168766332",
+        expiry: "2020-01",
         cvv: "000",
       },
       {
         id: "Mastercard1",
         holder: "Luis Martinez",
-        number: "777777777777",
-        expiry: "02/02",
+        number: "5343629376550415",
+        expiry: "2020-02",
         cvv: "111",
       },
     ],

@@ -11,23 +11,30 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-container>
-      <v-row dense>
-        <v-col cols="6">
-          <v-text-field v-model="card.holder" label="Card Holder Name" required></v-text-field>
-        </v-col>
-        <v-col cols="6">
-          <v-text-field v-model="card.number" label="Card Number" required></v-text-field>
-        </v-col>
-        <v-col cols="6">
-          <v-text-field v-model="card.expiry" label="Expiry Date" required></v-text-field>
-        </v-col>
-        <v-col cols="6">
-          <v-text-field v-model="card.cvv" label="CVV" required></v-text-field>
-        </v-col>
-        <v-col cols="12">
-          <v-text-field v-model="card.id" label="Card name" required></v-text-field>
-        </v-col>
-      </v-row>
+      <v-form ref="form">
+        <v-row dense>
+          <v-col cols="6">
+            <v-text-field v-model="card.holder" :rules="holderRules" label="Card holder name"></v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="card.number" :rules="numberRules" label="Card number"></v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-menu  absolute>
+              <template v-slot:activator="{ on }">
+                <v-text-field v-model="card.expiry" :rules="expiryRules" label="Expiry date" readonly v-on="on"></v-text-field>
+              </template>
+              <v-date-picker type="month" v-model="card.expiry"></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="card.cvv" :rules="cvvRules" label="CVV"></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field v-model="card.id" :rules="idRules" label="Card name"></v-text-field>
+          </v-col>
+        </v-row>
+      </v-form>
     </v-container>
   </v-card>
 </template>
@@ -40,9 +47,13 @@ export default {
   data: () => ({
     card: { id: "", holder: "", number: "", expiry: "", cvv: "" },
     newCard: false,
+    idRules: [ v => !!v || 'Card name is required',],
+    holderRules: [ v => !!v || 'Card holder name is required',  v=> /^((?:[A-Za-z]+ ?){1,3})$/.test(v) || 'Invalid card holder name'],
+    numberRules: [ v => !!v || 'Card number is required', v => /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/.test(v) || 'Card number invalid'],
+    expiryRules: [ v => !!v || 'Expiry date is required',],
+    cvvRules: [ v => !!v || 'CVV is required',  v => /^[0-9]{3}$/.test(v) || 'CVV must be 3 digits'],
   }),
   created() {
-      console.log(this.cardToEdit)
     if (this.cardToEdit == null) {
       this.newCard = true;
     } else {
@@ -51,10 +62,12 @@ export default {
   },
   methods: {
     save() {
-      if (this.newCard) {
-        this.$emit("createdCard", this.card);
-      } else {
-        this.$emit("editedCard", this.card);
+      if (this.$refs.form.validate()) {
+        if (this.newCard) {
+          this.$emit("createdCard", this.card);
+        } else {
+          this.$emit("editedCard", this.card);
+        }
       }
     },
   },
