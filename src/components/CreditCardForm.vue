@@ -14,17 +14,17 @@
       <v-form ref="form">
         <v-row dense>
           <v-col cols="6">
-            <v-text-field v-model="card.holder" :rules="holderRules" label="Card holder name"></v-text-field>
+            <v-text-field v-model="card.holder" :rules="rules.holder" label="Card holder name"></v-text-field>
           </v-col>
           <v-col cols="6">
-            <v-text-field v-model="card.number" :rules="numberRules" label="Card number"></v-text-field>
+            <v-text-field v-model="card.number" :rules="rules.number" label="Card number"></v-text-field>
           </v-col>
           <v-col cols="6">
             <v-menu absolute>
               <template v-slot:activator="{ on }">
                 <v-text-field
                   v-model="card.expiry"
-                  :rules="expiryRules"
+                  :rules="rules.expiry"
                   label="Expiry date"
                   readonly
                   v-on="on"
@@ -34,10 +34,10 @@
             </v-menu>
           </v-col>
           <v-col cols="6">
-            <v-text-field v-model="card.cvv" :rules="cvvRules" label="CVV"></v-text-field>
+            <v-text-field v-model="card.cvv" :rules="rules.cvv" label="CVV"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-text-field v-model="card.id" :rules="idRules" label="Card name"></v-text-field>
+            <v-text-field v-model="card.id" :rules="rules.id" label="Card name"></v-text-field>
           </v-col>
         </v-row>
       </v-form>
@@ -53,22 +53,24 @@ export default {
   data: () => ({
     card: { id: "", holder: "", number: "", expiry: "", cvv: "" },
     newCard: false,
-    idRules: [(v) => !!v || "Card name is required"],
-    holderRules: [
-      (v) => !!v || "Card holder name is required",
-      (v) => /^((?:[A-Za-z]+ ?){1,3})$/.test(v) || "Invalid card holder name",
-    ],
-    numberRules: [
-      (v) => !!v || "Card number is required",
-      (v) =>
-        /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/.test(v) ||
-        "Card number invalid",
-    ],
-    expiryRules: [(v) => !!v || "Expiry date is required"],
-    cvvRules: [
-      (v) => !!v || "CVV is required",
-      (v) => /^[0-9]{3}$/.test(v) || "CVV must be 3 digits",
-    ],
+    rules: {
+      id: [(v) => !!v || "Card name is required"],
+      holder: [
+        (v) => !!v || "Card holder name is required",
+        (v) => /^((?:[A-Za-z]+ ?){1,3})$/.test(v) || "Invalid card holder name",
+      ],
+      number: [
+        (v) => !!v || "Card number is required",
+        (v) =>
+          /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/.test(v) ||
+          "Card number invalid",
+      ],
+      expiry: [(v) => !!v || "Expiry date is required"],
+      cvv: [
+        (v) => !!v || "CVV is required",
+        (v) => /^[0-9]{3}$/.test(v) || "CVV must be 3 digits",
+      ],
+    },
   }),
   created() {
     if (this.cardToEdit == null) {
@@ -80,14 +82,11 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        this.save();
-      }
-    },
-    save() {
-      if (this.newCard) {
-        this.$emit("createdCard", this.card);
-      } else {
-        this.$emit("editedCard", this.card);
+        if (this.newCard) {
+          this.$emit("createdCard", this.card);
+        } else {
+          this.$emit("editedCard", this.card);
+        }
       }
     },
   },
