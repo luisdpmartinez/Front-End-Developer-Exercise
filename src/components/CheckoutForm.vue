@@ -147,8 +147,12 @@ export default {
       this.cards.push(card);
       this.dialog = false;
     },
-    saveCard(card) {
-      this.cardToEdit = card;
+    saveCard(card,id) {
+      for (let index = 0; index < this.cards.length; index++) {
+        if (this.cards[index].id === id){
+          this.cards[index]=card
+        }
+      }
       this.dialog = false;
     },
   },

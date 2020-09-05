@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
 export default {
   name: "CreditCardForm",
 
@@ -76,7 +78,7 @@ export default {
     if (this.cardToEdit == null) {
       this.newCard = true;
     } else {
-      this.card = this.cardToEdit;
+      this.card = Vue.util.extend({}, this.cardToEdit)
     }
   },
   methods: {
@@ -85,7 +87,7 @@ export default {
         if (this.newCard) {
           this.$emit("createdCard", this.card);
         } else {
-          this.$emit("editedCard", this.card);
+          this.$emit("editedCard", this.card, this.cardToEdit.id);
         }
       }
     },
