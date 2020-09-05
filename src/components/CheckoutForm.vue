@@ -34,7 +34,7 @@
                   <v-list-item-content>
                     <v-list-item-title v-text="c.id"></v-list-item-title>
                     <v-list-item-subtitle class="text--primary" v-text="c.holder"></v-list-item-subtitle>
-                    <v-list-item-subtitle v-text="c.number"></v-list-item-subtitle>
+                    <v-list-item-subtitle> {{c.number | censor}}</v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
                     <v-icon v-if="!active">mdi-checkbox-blank-circle-outline</v-icon>
@@ -78,7 +78,7 @@
               <v-icon large left>mdi-credit-card</v-icon>
               <span class="title">{{this.cards[this.selected].id}}</span>
             </v-card-title>
-            <v-card-text class="headline font-weight-bold">{{this.cards[this.selected].number}}</v-card-text>
+            <v-card-text class="headline font-weight-bold">{{this.cards[this.selected].number | censor }}</v-card-text>
             <v-card-actions>
               <v-list-item class="grow">
                 <v-list-item-content>
@@ -155,6 +155,13 @@ export default {
       }
       this.dialog = false;
     },
+  },
+  filters: {
+    censor: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return '**** **** **** '+ value.substr(value.length - 4);
+    }
   },
   watch: {
     dialog() {
