@@ -13,6 +13,11 @@
     >{{steps[currentStep-1]}}</div>
     <v-stepper-items>
       <v-stepper-content step="1">
+        <v-row>
+          <v-spacer/>
+          <p>Todo</p>
+        <v-spacer/>
+        </v-row>
         <v-form ref="shipping">
           <v-row>
             <v-col class="text-right">
@@ -24,13 +29,18 @@
 
       <v-stepper-content step="2">
         <v-list two-line height="300px" style="overflow-y:scroll;">
-          <v-list-item-group v-model="selected" mandatory active-class="blue--text">
+          <v-list-item-group v-model="selected" active-class="blue--text">
             <template v-for="c in cards">
               <v-list-item :key="c.id">
                 <template v-slot:default="{ active }">
+                  <div class="mr-3">
+                    <v-btn icon @click.stop="deleteCard(c.id)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
                   <v-btn icon @click.stop="editCard(c)">
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
+                  </div>
                   <v-list-item-content>
                     <v-list-item-title v-text="c.id"></v-list-item-title>
                     <v-list-item-subtitle class="text--primary" v-text="c.holder"></v-list-item-subtitle>
@@ -56,7 +66,7 @@
             <v-btn @click="currentStep -= 1">Back</v-btn>
           </v-col>
           <v-col class="text-right">
-            <v-btn @click="currentStep += 1" color="primary">Next</v-btn>
+            <v-btn :disabled="this.cards.length<1 || typeof selected === 'undefined'" @click="currentStep += 1" color="primary">Next</v-btn>
           </v-col>
         </v-row>
 
@@ -73,7 +83,7 @@
 
       <v-stepper-content step="3">
         <v-container>
-          <v-card color="#000080" dark max-width="300" class="mx-auto">
+          <v-card color="#000080" dark max-width="300" class="mx-auto" v-if="typeof selected !== 'undefined'">
             <v-card-title>
               <v-icon large left>mdi-credit-card</v-icon>
               <span class="title">{{this.cards[this.selected].id}}</span>
@@ -139,6 +149,23 @@ export default {
     steps: ["Shipping", "Payment", "Review"],
   }),
   methods: {
+    getIndex(id){
+      for (let index = 0; index < this.cards.length; index++) {
+        if (this.cards[index].id === id){
+          return index
+        }
+      }
+      // not found, need to handle better
+      return -1
+    },
+    deleteCard(id){
+      if (confirm('Are you sure you want to delete this card?')) {
+        if (this.cards.length===1) {
+          this.selected=undefined 
+        }
+        this.cards.splice(this.getIndex(id), 1);
+      }
+    },
     editCard(card) {
       this.cardToEdit = card;
       this.dialog = true;
@@ -148,11 +175,7 @@ export default {
       this.dialog = false;
     },
     saveCard(card,id) {
-      for (let index = 0; index < this.cards.length; index++) {
-        if (this.cards[index].id === id){
-          this.cards[index]=card
-        }
-      }
+      this.cards[this.getIndex(id)]=card
       this.dialog = false;
     },
   },
