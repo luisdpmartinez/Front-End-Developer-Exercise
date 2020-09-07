@@ -13,82 +13,98 @@
     >{{steps[currentStep-1]}}</div>
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-row>
-          <v-spacer/>
-          <p>Todo</p>
-        <v-spacer/>
-        </v-row>
-        <v-form ref="shipping">
+        <v-container>
           <v-row>
-            <v-col class="text-right">
-              <v-btn @click="currentStep += 1" color="primary">Next</v-btn>
-            </v-col>
+            <v-spacer />
+            <p>Todo</p>
+            <v-spacer />
           </v-row>
-        </v-form>
+          <v-form ref="shipping">
+            <v-row>
+              <v-col class="text-right">
+                <v-btn @click="currentStep += 1" color="primary">Next</v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-container>
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-list two-line height="300px" style="overflow-y:scroll;">
-          <v-list-item-group v-model="selected" active-class="blue--text">
-            <template v-for="c in cards">
-              <v-list-item :key="c.id">
-                <template v-slot:default="{ active }">
-                  <div class="mr-3">
-                    <v-btn icon @click.stop="deleteCard(c.id)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-                  <v-btn icon @click.stop="editCard(c)">
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                  </div>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="c.id"></v-list-item-title>
-                    <v-list-item-subtitle class="text--primary" v-text="c.holder"></v-list-item-subtitle>
-                    <v-list-item-subtitle> {{c.number | censor}}</v-list-item-subtitle>
-                  </v-list-item-content>
-                  <v-list-item-action>
-                    <v-icon v-if="!active">mdi-checkbox-blank-circle-outline</v-icon>
-                    <v-icon v-else>mdi-checkbox-marked-circle</v-icon>
-                  </v-list-item-action>
-                </template>
-              </v-list-item>
-            </template>
-          </v-list-item-group>
-        </v-list>
-        <v-row justify="end">
-          <v-btn @click.stop="editCard(null)" text>
-            <v-icon>mdi-plus-circle-outline</v-icon>Add new card
-          </v-btn>
-        </v-row>
+        <v-container>
+          <v-list two-line height="300px" style="overflow-y:scroll;">
+            <v-list-item-group v-model="selected" active-class="blue--text">
+              <template v-for="c in cards">
+                <v-list-item :key="c.id">
+                  <template v-slot:default="{ active }">
+                    <div class="mr-3">
+                      <v-btn icon @click.stop="deleteCard(c.id)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                      <v-btn icon @click.stop="editCard(c)">
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-btn>
+                    </div>
+                    <v-list-item-content>
+                      <v-list-item-title v-text="c.id"></v-list-item-title>
+                      <v-list-item-subtitle class="text--primary" v-text="c.holder"></v-list-item-subtitle>
+                      <v-list-item-subtitle>{{c.number | censor}}</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-icon v-if="!active">mdi-checkbox-blank-circle-outline</v-icon>
+                      <v-icon v-else>mdi-checkbox-marked-circle</v-icon>
+                    </v-list-item-action>
+                  </template>
+                </v-list-item>
+              </template>
+            </v-list-item-group>
+          </v-list>
+          <v-row justify="end">
+            <v-btn @click.stop="editCard(null)" text>
+              <v-icon>mdi-plus-circle-outline</v-icon>Add new card
+            </v-btn>
+          </v-row>
 
-        <v-row>
-          <v-col class="text-left">
-            <v-btn @click="currentStep -= 1">Back</v-btn>
-          </v-col>
-          <v-col class="text-right">
-            <v-btn :disabled="this.cards.length<1 || typeof selected === 'undefined'" @click="currentStep += 1" color="primary">Next</v-btn>
-          </v-col>
-        </v-row>
+          <v-row>
+            <v-col class="text-left">
+              <v-btn @click="currentStep -= 1">Back</v-btn>
+            </v-col>
+            <v-col class="text-right">
+              <v-btn
+                :disabled="this.cards.length<1 || typeof selected === 'undefined'"
+                @click="currentStep += 1"
+                color="primary"
+              >Next</v-btn>
+            </v-col>
+          </v-row>
 
-        <v-bottom-sheet v-model="dialog" persistent>
-          <CreditCardForm
-            :key="formKey"
-            @close="dialog=false"
-            @createdCard="addCard"
-            @editedCard="saveCard"
-            v-bind:cardToEdit="cardToEdit"
-          />
-        </v-bottom-sheet>
+          <v-bottom-sheet v-model="dialog" persistent>
+            <CreditCardForm
+              :key="formKey"
+              @close="dialog=false"
+              @createdCard="addCard"
+              @editedCard="saveCard"
+              v-bind:cardToEdit="cardToEdit"
+            />
+          </v-bottom-sheet>
+        </v-container>
       </v-stepper-content>
 
       <v-stepper-content step="3">
         <v-container>
-          <v-card color="#000080" dark max-width="300" class="mx-auto" v-if="typeof selected !== 'undefined'">
+          <v-card
+            color="#000080"
+            dark
+            max-width="300"
+            class="mx-auto"
+            v-if="typeof selected !== 'undefined'"
+          >
             <v-card-title>
               <v-icon large left>mdi-credit-card</v-icon>
               <span class="title">{{this.cards[this.selected].id}}</span>
             </v-card-title>
-            <v-card-text class="headline font-weight-bold">{{this.cards[this.selected].number | censor }}</v-card-text>
+            <v-card-text
+              class="headline font-weight-bold"
+            >{{this.cards[this.selected].number | censor }}</v-card-text>
             <v-card-actions>
               <v-list-item class="grow">
                 <v-list-item-content>
@@ -149,19 +165,19 @@ export default {
     steps: ["Shipping", "Payment", "Review"],
   }),
   methods: {
-    getIndex(id){
+    getIndex(id) {
       for (let index = 0; index < this.cards.length; index++) {
-        if (this.cards[index].id === id){
-          return index
+        if (this.cards[index].id === id) {
+          return index;
         }
       }
       // not found, need to handle better
-      return -1
+      return -1;
     },
-    deleteCard(id){
-      if (confirm('Are you sure you want to delete this card?')) {
-        if (this.cards.length===1) {
-          this.selected=undefined 
+    deleteCard(id) {
+      if (confirm("Are you sure you want to delete this card?")) {
+        if (this.cards.length === 1) {
+          this.selected = undefined;
         }
         this.cards.splice(this.getIndex(id), 1);
       }
@@ -174,17 +190,17 @@ export default {
       this.cards.push(card);
       this.dialog = false;
     },
-    saveCard(card,id) {
-      this.cards[this.getIndex(id)]=card
+    saveCard(card, id) {
+      this.cards[this.getIndex(id)] = card;
       this.dialog = false;
     },
   },
   filters: {
     censor: function (value) {
-      if (!value) return ''
-      value = value.toString()
-      return '**** **** **** '+ value.substr(value.length - 4);
-    }
+      if (!value) return "";
+      value = value.toString();
+      return "**** **** **** " + value.substr(value.length - 4);
+    },
   },
   watch: {
     dialog() {
