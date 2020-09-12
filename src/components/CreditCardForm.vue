@@ -11,7 +11,8 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-container>
-      <v-form ref="form">
+      <vue-paycard :value-fields="valueFields" />
+      <v-form class="mt-12" ref="form">
         <v-row dense>
           <v-col cols="6">
             <v-text-field v-model="card.holder" :rules="rules.holder" label="Card holder name"></v-text-field>
@@ -50,7 +51,17 @@ import Vue from 'vue'
 
 export default {
   name: "CreditCardForm",
-
+  computed: {
+    valueFields() {
+      var preview={}
+      preview.cardName=this.card.holder
+      preview.cardNumber=this.card.number.replace(/\W/gi, '').replace(/(.{4})/g, '$1 ')
+      preview.cardCVV=this.card.cvv
+      preview.cardMonth=this.card.expiry.substring(5,7)
+      preview.cardYear=this.card.expiry.substring(0,4)
+      return preview
+    }
+  },
   props: ["cardToEdit"],
   data: () => ({
     card: { id: "", holder: "", number: "", expiry: "", cvv: "" },

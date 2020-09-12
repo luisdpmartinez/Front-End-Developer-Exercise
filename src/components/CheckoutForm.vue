@@ -91,34 +91,9 @@
 
       <v-stepper-content step="3">
         <v-container>
-          <v-card
-            color="#000080"
-            dark
-            max-width="300"
-            class="mx-auto"
-            v-if="typeof selected !== 'undefined'"
-          >
-            <v-card-title>
-              <v-icon large left>mdi-credit-card</v-icon>
-              <span class="title">{{this.cards[this.selected].id}}</span>
-            </v-card-title>
-            <v-card-text
-              class="headline font-weight-bold"
-            >{{this.cards[this.selected].number | censor }}</v-card-text>
-            <v-card-actions>
-              <v-list-item class="grow">
-                <v-list-item-content>
-                  <v-list-item-title>{{this.cards[this.selected].holder}}</v-list-item-title>
-                </v-list-item-content>
-
-                <v-row align="center" justify="end">
-                  <span class="subheading mr-2">{{this.cards[this.selected].expiry}}</span>
-                </v-row>
-              </v-list-item>
-            </v-card-actions>
-          </v-card>
-
-          <v-row>
+           <vue-paycard v-if="typeof selected !== 'undefined'" :value-fields="valueFields" />
+          
+          <v-row class="mt-12">
             <v-col class="text-left">
               <v-btn @click="currentStep -= 1">Back</v-btn>
             </v-col>
@@ -139,6 +114,17 @@ export default {
   name: "CheckoutForm",
   components: {
     CreditCardForm,
+  },
+   computed: {
+    valueFields() {
+      var preview={}
+      preview.cardName=this.cards[this.selected].holder
+      preview.cardNumber=this.cards[this.selected].number.replace(/\W/gi, '').replace(/(.{4})/g, '$1 ')
+      preview.cardCVV=this.cards[this.selected].cvv
+      preview.cardMonth=this.cards[this.selected].expiry.substring(5,7)
+      preview.cardYear=this.cards[this.selected].expiry.substring(0,4)
+      return preview
+    }
   },
   data: () => ({
     dialog: false,
